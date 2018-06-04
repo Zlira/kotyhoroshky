@@ -8,7 +8,7 @@ class Controls extends Component {
       <GuessPeasControls trialParams={this.props.trialParams}
                          userGuess={this.props.userGuess}
                          handleUserGuess={this.props.handleUserGuess} />
-      <RunButton />
+      <RunButton generateData={this.props.generateData}/>
     </div>
   }
 }
@@ -53,7 +53,7 @@ class GuessPeasControls extends Component {
 
 class RunButton extends Component {
   render() {
-    return <button>Вперед!</button>
+    return <button onClick={this.props.generateData}>Вперед!</button>
   }
 }
 

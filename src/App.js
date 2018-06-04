@@ -7,20 +7,42 @@ import Results from './Results'
 
 
 class SimulationApp extends Component {
+  // todo add a way to use options other then just green/yellow
   constructor(props) {
     super(props)
     const peasPerTrial = 6
+    const numTrials = 10
+    this.options = ['green', 'yellow']
     this.state = {
       trialParams: {
-        numTrials: 10,
+        numTrials: numTrials,
         peasPerTrial: peasPerTrial,
       },
       userGuess: {
         green: peasPerTrial,
         yellow: 0,
       },
+      peaData: Array(numTrials),
     }
     this.handleUserGuess = this.handleUserGuess.bind(this)
+    this.generateData = this.generateData.bind(this)
+  }
+
+  generateData() {
+    let expected, actual
+    const data = []
+    for (let i=0; i < this.state.trialParams.numTrials; i++) {
+      expected = Array(this.state.userGuess.green).fill('green')
+                      .concat(Array(this.state.userGuess.yellow).fill('yellow'))
+      actual = Array(this.state.trialParams.peasPerTrial).fill(undefined).map(
+        (d, i) => Math.random() >= .5? 'green' : 'yellow'
+      )
+      data.push({
+        'expected': expected,
+        'actual': actual,
+      })
+    }
+    this.setState({peaData: data})
   }
 
   handleUserGuess(event) {
@@ -32,8 +54,8 @@ class SimulationApp extends Component {
     }
     this.setState({
       userGuess: {
-        yellow: yellow,
-        green: green,
+        yellow: parseInt(yellow, 10),
+        green: parseInt(green, 10),
       }
     })
   }
@@ -44,8 +66,9 @@ class SimulationApp extends Component {
         <Header />
         <Controls trialParams={this.state.trialParams}
                   userGuess={this.state.userGuess}
-                  handleUserGuess={this.handleUserGuess}/>
-        <Simulation />
+                  handleUserGuess={this.handleUserGuess}
+                  generateData={this.generateData} />
+        <Simulation data={this.state.peaData} />
         <Results />
       </section>
     );

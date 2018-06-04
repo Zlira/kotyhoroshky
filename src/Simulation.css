@@ -1,0 +1,27 @@
+rect.peaTrials {
+  fill: #666;
+}
+
+.pea {
+  stroke-width: 2;
+}
+
+.green.pea {
+  stroke: #a9cf46;
+}
+
+.yellow.pea {
+  stroke: #ffcc2a;
+}
+
+.green.actual.pea {
+  fill: #a9cf46;
+}
+
+.yellow.actual.pea {
+  fill: #ffcc2a;
+}
+
+.expected.pea {
+  fill: #666;
+}
