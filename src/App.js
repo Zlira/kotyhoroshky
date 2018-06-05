@@ -19,17 +19,21 @@ class SimulationApp extends Component {
         peasPerTrial: peasPerTrial,
       },
       userGuess: {
-        green: peasPerTrial,
-        yellow: 0,
+        green: 0,
+        yellow: peasPerTrial,
       },
       peaData: Array(numTrials),
+      // todo move this to data
+      successRate: 0,
     }
     this.handleUserGuess = this.handleUserGuess.bind(this)
     this.generateData = this.generateData.bind(this)
+    this.calculateSuccessRate = this.calculateSuccessRate.bind(this)
   }
 
+  // todo move all data related functions to a separate class
   generateData() {
-    let expected, actual
+    let expected, actual, successRate
     const data = []
     for (let i=0; i < this.state.trialParams.numTrials; i++) {
       expected = Array(this.state.userGuess.green).fill('green')
@@ -42,14 +46,34 @@ class SimulationApp extends Component {
         'actual': actual,
       })
     }
-    this.setState({peaData: data})
+    successRate = this.calculateSuccessRate(data)
+    this.setState({peaData: data, successRate: successRate})
+  }
+
+  // todo maybe calculate success rate for each trial during data generation
+  calculateSuccessRate(data) {
+    let totSuccessRate = 0, trialSuccessRate, counts
+    // todo what if data is initialized?
+    const trialLength = data[0].expected.length
+    for (let trial of data) {
+      counts = {expected: 0, actual: 0}
+      // count green peas
+      for (let i=0; i < trialLength; i++) {
+        // not using state.userGuess because data can be a standalone class
+        counts.expected += trial.expected[i] === 'green'? 1: 0
+        counts.actual += trial.actual[i] === 'green'? 1: 0
+      }
+      trialSuccessRate = 1 - (Math.abs(counts.expected - counts.actual) / trialLength)
+      totSuccessRate += trialSuccessRate
+    }
+    return totSuccessRate / data.length
   }
 
   handleUserGuess(event) {
     const target = event.target
-    let yellow = event.target.value
-    let green = this.state.trialParams.peasPerTrial - yellow
-    if (target.name === 'green') {
+    let green = event.target.value
+    let yellow = this.state.trialParams.peasPerTrial - green
+    if (target.name === 'yellow') {
       [yellow, green] = [green, yellow]
     }
     this.setState({
@@ -69,7 +93,7 @@ class SimulationApp extends Component {
                   handleUserGuess={this.handleUserGuess}
                   generateData={this.generateData} />
         <Simulation data={this.state.peaData} />
-        <Results />
+        <Results width="700" successRate={this.state.successRate}/>
       </section>
     );
   }

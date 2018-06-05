@@ -40,7 +40,7 @@ class GuessPeasControls extends Component {
     return <div>
       <input type='range'
              min={0} max={this.props.trialParams.peasPerTrial}
-             value={this.props.userGuess.yellow} sptep={1}
+             value={this.props.userGuess.green} sptep={1}
              onChange={this.props.handleUserGuess} />
       <p>
         Щоразу підготувати {}

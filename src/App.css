@@ -2,3 +2,12 @@
   max-width: 700px;
   margin: 0 auto;
 }
+
+rect.simulationResult {
+  fill: #b3b3b3;
+}
+
+rect.resultIndicator {
+  fill: white;
+  stroke: red;
+}
