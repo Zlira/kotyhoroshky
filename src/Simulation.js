@@ -38,9 +38,9 @@ class Trial extends Component {
       this.props.index
     )
     return (<g transform={`translate(${coordinates.x}, ${coordinates.y})`}>
-      <Peas data={this.props.data.expected} y={0} type="expected"/>
+      <Peas data={this.props.data.expected} y={0} />
       {/* y attribute should be linked to circle radius */}
-      <Peas data={this.props.data.actual} y={19} type="actual"  />
+      <Peas data={this.props.data.actual} y={19} />
     </g>)
   }
 }
@@ -50,9 +50,10 @@ class Peas extends Component {
     const r = 7
     const paddingTop = 5
     const circles = this.props.data.map(
-      (d, i) => <circle cx={(2 * i + 1) * r} cy={this.props.y + r + paddingTop}
-                 r={r} key={i}
-                 className={`${this.props.type} pea ${d}`}/>
+      (d, i) => {
+        return (<circle cx={(2 * i + 1) * r} cy={this.props.y + r + paddingTop}
+                  r={r} key={i}
+                  className={`${d.existsIn} pea ${d.variant}`}/>)}
     )
     return (<g transform="translate(5, 0)">
       {circles}

@@ -14,14 +14,14 @@ rect.peaTrials {
   stroke: #ffcc2a;
 }
 
-.green.actual.pea {
+.green.present.pea {
   fill: #a9cf46;
 }
 
-.yellow.actual.pea {
+.yellow.present.pea {
   fill: #ffcc2a;
 }
 
-.expected.pea {
+.hopes.pea {
   fill: #666;
 }

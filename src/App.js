@@ -4,6 +4,7 @@ import Header from './Header'
 import Controls from './Controls'
 import Simulation from './Simulation'
 import Results from './Results'
+import {getData} from './PeaData'
 
 
 class SimulationApp extends Component {
@@ -33,40 +34,19 @@ class SimulationApp extends Component {
 
   // todo move all data related functions to a separate class
   generateData() {
-    let expected, actual, successRate
-    const data = []
-    for (let i=0; i < this.state.trialParams.numTrials; i++) {
-      expected = Array(this.state.userGuess.green).fill('green')
-                      .concat(Array(this.state.userGuess.yellow).fill('yellow'))
-      actual = Array(this.state.trialParams.peasPerTrial).fill(undefined).map(
-        (d, i) => Math.random() >= .5? 'green' : 'yellow'
-      )
-      data.push({
-        'expected': expected,
-        'actual': actual,
-      })
-    }
-    successRate = this.calculateSuccessRate(data)
+    const data = getData(
+      ['green', 'yellow'], this.state.trialParams.numTrials,
+      this.state.trialParams.peasPerTrial, this.state.userGuess
+    )
+    const successRate = this.calculateSuccessRate(data)
     this.setState({peaData: data, successRate: successRate})
   }
 
   // todo maybe calculate success rate for each trial during data generation
   calculateSuccessRate(data) {
-    let totSuccessRate = 0, trialSuccessRate, counts
-    // todo what if data is initialized?
-    const trialLength = data[0].expected.length
-    for (let trial of data) {
-      counts = {expected: 0, actual: 0}
-      // count green peas
-      for (let i=0; i < trialLength; i++) {
-        // not using state.userGuess because data can be a standalone class
-        counts.expected += trial.expected[i] === 'green'? 1: 0
-        counts.actual += trial.actual[i] === 'green'? 1: 0
-      }
-      trialSuccessRate = 1 - (Math.abs(counts.expected - counts.actual) / trialLength)
-      totSuccessRate += trialSuccessRate
-    }
-    return totSuccessRate / data.length
+    return 1 - data.map((trial) => trial.successRate)
+                   .reduce((acc, val) => acc + val)
+                   / data.length
   }
 
   handleUserGuess(event) {
