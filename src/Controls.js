@@ -9,6 +9,7 @@ class Controls extends Component {
                          userGuess={this.props.userGuess}
                          handleUserGuess={this.props.handleUserGuess} />
       <RunButton generateData={this.props.generateData}/>
+      <SortButton sortData={this.props.sortData}/>
     </div>
   }
 }
@@ -55,6 +56,10 @@ class RunButton extends Component {
   render() {
     return <button onClick={this.props.generateData}>Вперед!</button>
   }
+}
+
+function SortButton(props) {
+  return <button onClick={props.sortData}>Показати успіх!</button>
 }
 
 

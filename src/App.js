@@ -4,7 +4,7 @@ import Header from './Header'
 import Controls from './Controls'
 import Simulation from './Simulation'
 import Results from './Results'
-import {getData} from './PeaData'
+import {getData, sortedDataBySuccess} from './PeaData'
 
 
 class SimulationApp extends Component {
@@ -30,6 +30,7 @@ class SimulationApp extends Component {
     this.handleUserGuess = this.handleUserGuess.bind(this)
     this.generateData = this.generateData.bind(this)
     this.calculateSuccessRate = this.calculateSuccessRate.bind(this)
+    this.sortDataBySuccess = this.sortDataBySuccess.bind(this)
   }
 
   // todo move all data related functions to a separate class
@@ -47,6 +48,12 @@ class SimulationApp extends Component {
     return 1 - data.map((trial) => trial.successRate)
                    .reduce((acc, val) => acc + val)
                    / data.length
+  }
+
+  sortDataBySuccess() {
+    this.setState({
+      peaData: sortedDataBySuccess(this.state.peaData)
+    })
   }
 
   handleUserGuess(event) {
@@ -71,7 +78,8 @@ class SimulationApp extends Component {
         <Controls trialParams={this.state.trialParams}
                   userGuess={this.state.userGuess}
                   handleUserGuess={this.handleUserGuess}
-                  generateData={this.generateData} />
+                  generateData={this.generateData}
+                  sortData={this.sortDataBySuccess} />
         <Simulation data={this.state.peaData} />
         <Results width="700" successRate={this.state.successRate}/>
       </section>

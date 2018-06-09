@@ -53,6 +53,7 @@ class Peas extends Component {
       (d, i) => {
         return (<circle cx={(2 * i + 1) * r} cy={this.props.y + r + paddingTop}
                   r={r} key={i}
+                  transform={`translate(0, ${d.provedNeeded? 12: 0})`}
                   className={`${d.existsIn} pea ${d.variant}`}/>)}
     )
     return (<g transform="translate(5, 0)">

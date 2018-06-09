@@ -1,22 +1,4 @@
-// BunchOfTrials
-   // options
-   // userGuess
-   // numTrials
-   // peasPerTrial
-   // beforeTrailStart
-   // sorted
-   // - successRate
-// Trail
-   // options
-   // userGuess
-   // numPeas
-   // beforeTrailStart
-   // sorted
-   // - successRate
-// Pea
-   // peaVariant
-   // exists (actual/expected)
-   // isHappy
+// TODO extpected, hoped or guessed?
 function getData(peaVariants, numTrials, peasPerTrial, userHopes) {
     const data = []
     for (let i=0; i < numTrials; i++) {
@@ -25,6 +7,10 @@ function getData(peaVariants, numTrials, peasPerTrial, userHopes) {
       )
     }
     return data
+}
+
+function sortedDataBySuccess(data)  {
+  return data.map(trial => sortedTrialBySuccess(trial))
 }
 
 function getTrial(peaVariants, numPeas, userHopes) {
@@ -36,23 +22,39 @@ function getTrial(peaVariants, numPeas, userHopes) {
   return trial
 }
 
+function sortedTrialBySuccess(trial) {
+  const peaCounts = getTrialPeaCounts(trial)
+  let redundunt = []
+
+  let redunduntVarCount
+  for (let peaVariant of Object.keys(peaCounts.expected)) {
+    redunduntVarCount = peaCounts.expected[peaVariant] -
+                        (peaCounts.actual[peaVariant] || 0)
+    if (redunduntVarCount <= 0) {continue}
+    redundunt = redundunt.concat(Array(redunduntVarCount).fill().map(
+      () => getPea(peaVariant, 'hopes')
+    ))
+  }
+  let sortedExpected = []
+  let peaVariant
+  for (let actualPea of trial.actual) {
+    peaVariant = actualPea.variant
+    if (peaCounts.expected[peaVariant] > 0) {
+      sortedExpected.push(getPea(peaVariant, 'hopes', true))
+      peaCounts.expected[peaVariant]--
+    } else {
+      sortedExpected.push(redundunt.pop())
+    }
+  }
+  sortedExpected = [...sortedExpected, ...redundunt]
+  return {
+    ...trial, expected: sortedExpected,
+  }
+}
+
 function getTrialSuccessRate(trial) {
-  // todo split the function
-  const counts = {
-    actual: {}, expected: {},
-  }
-  let actualVar, expectedVar, unhappyCount = 0,
-    varUnhappyCount, varExpectedCount
-  for (let i=0; i < trial.actual.length; i++) {
-    actualVar = trial.actual[i]['variant']
-    counts.actual[actualVar] ?
-      counts.actual[actualVar]++ :
-      counts.actual[actualVar] = 1
-    expectedVar = trial.expected[i]['variant']
-    counts.expected[expectedVar] ?
-      counts.expected[expectedVar]++ :
-      counts.expected[expectedVar] = 1
-  }
+  const counts = getTrialPeaCounts(trial)
+  let unhappyCount = 0, varUnhappyCount, varExpectedCount
   for (let peaVar of Object.keys(counts.actual)) {
     varExpectedCount = counts.expected[peaVar] || 0
     varUnhappyCount = counts.actual[peaVar] - varExpectedCount
@@ -71,6 +73,26 @@ function getExpectedPeas(userHopes) {
   return peas
 }
 
+function getTrialPeaCounts (trial) {
+  // TODO ensure that both actual and expected always have the
+  // same keys
+  const counts = {
+    actual: {}, expected: {},
+  }
+  let currActualVar, currExpectedVar
+  for (let i=0; i < trial.actual.length; i++) {
+    currActualVar = trial.actual[i]['variant']
+    counts.actual[currActualVar] ?
+      counts.actual[currActualVar]++ :
+      counts.actual[currActualVar] = 1
+    currExpectedVar = trial.expected[i]['variant']
+    counts.expected[currExpectedVar] ?
+      counts.expected[currExpectedVar]++ :
+      counts.expected[currExpectedVar] = 1
+  }
+  return counts
+}
+
 function getRandomPeas(variants, num) {
   const step = 1 / variants.length
   return Array(num).fill(undefined).map(
@@ -79,14 +101,14 @@ function getRandomPeas(variants, num) {
       return getPea(variants[varIndex], 'present')
     }
   )
-
 }
 
-function getPea(variant, existsIn, isHappy) {
+// todo split to real and imagened peas
+function getPea(variant, existsIn, provedNeeded) {
   // existIn: future, present, hopes
   return {
-    variant: variant, existsIn: existsIn, isHappy: isHappy
+    variant: variant, existsIn: existsIn, provedNeeded: provedNeeded
   }
 }
 
-export {getData};
+export {getData, sortedDataBySuccess};
