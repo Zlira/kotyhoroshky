@@ -9,8 +9,9 @@ function getData(peaVariants, numTrials, peasPerTrial, userHopes) {
     return data
 }
 
+// TODO no need for this function
 function sortedDataBySuccess(data)  {
-  return data.map(trial => sortedTrialBySuccess(trial))
+  return data.map(sortedTrialBySuccess)
 }
 
 function getTrial(peaVariants, numPeas, userHopes) {
@@ -49,6 +50,25 @@ function sortedTrialBySuccess(trial) {
   sortedExpected = [...sortedExpected, ...redundunt]
   return {
     ...trial, expected: sortedExpected,
+  }
+}
+
+
+function sortedTrialByMatching(trial) {
+  let compareExpectedPeas = (p1, p2) => {
+    let needed1 = Boolean(p1.provedNeeded)
+    let needed2 = Boolean(p2.provedNeeded)
+    if (p1 === p2) {return 0}
+    return needed1 > needed2? -1 : 1
+  }
+  const expected = trial.expected.slice()
+  const actual = trial.actual.slice()
+    .map((pea, index) => [pea, index])
+    .sort((p1, p2) => compareExpectedPeas(expected[p1[1]], expected[p2[1]]))
+    .map(p => p[0])
+  expected.sort(compareExpectedPeas)
+  return {
+    ...trial, expected: expected, actual: actual
   }
 }
 
@@ -111,4 +131,4 @@ function getPea(variant, existsIn, provedNeeded) {
   }
 }
 
-export {getData, sortedDataBySuccess};
+export {getData, sortedDataBySuccess, sortedTrialByMatching};

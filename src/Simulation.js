@@ -9,7 +9,10 @@ function getTrialCooridates(width, height, lineLength, index) {
 class Simulation extends Component {
   // todo calculate this props dynamically
   render() {
-    const trialWidth = 100
+    // TODO link this to a pea size
+    const firstTrial = this.props.data[0]
+    const peasPerTrial = firstTrial? firstTrial.expected.length : 0
+    const trialWidth = 14 * (peasPerTrial + 1)
     const trialHeight = 55
     const width = 700
     const height = Math.ceil(

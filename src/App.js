@@ -4,17 +4,19 @@ import Header from './Header'
 import Controls from './Controls'
 import Simulation from './Simulation'
 import Results from './Results'
-import {getData, sortedDataBySuccess} from './PeaData'
+import {getData, sortedDataBySuccess, sortedTrialByMatching} from './PeaData'
 
 
 class SimulationApp extends Component {
   // todo add a way to use options other then just green/yellow
   constructor(props) {
     super(props)
-    const peasPerTrial = 6
-    const numTrials = 10
+    const peasPerTrial = props.peasPerTrial || 6
+    const numTrials = props.numTrials || 10
     this.options = ['green', 'yellow']
     this.state = {
+      // TODO should this be in state if it can be inferred from
+      // paeData?
       trialParams: {
         numTrials: numTrials,
         peasPerTrial: peasPerTrial,
@@ -24,16 +26,15 @@ class SimulationApp extends Component {
         yellow: peasPerTrial,
       },
       peaData: Array(numTrials),
-      // todo move this to data
       successRate: 0,
     }
     this.handleUserGuess = this.handleUserGuess.bind(this)
     this.generateData = this.generateData.bind(this)
     this.calculateSuccessRate = this.calculateSuccessRate.bind(this)
     this.sortDataBySuccess = this.sortDataBySuccess.bind(this)
+    this.sortDataByMatching = this.sortDataByMatching.bind(this)
   }
 
-  // todo move all data related functions to a separate class
   generateData() {
     const data = getData(
       ['green', 'yellow'], this.state.trialParams.numTrials,
@@ -43,16 +44,22 @@ class SimulationApp extends Component {
     this.setState({peaData: data, successRate: successRate})
   }
 
-  // todo maybe calculate success rate for each trial during data generation
   calculateSuccessRate(data) {
     return 1 - data.map((trial) => trial.successRate)
                    .reduce((acc, val) => acc + val)
                    / data.length
   }
 
+  // TODO think of a better name
   sortDataBySuccess() {
     this.setState({
       peaData: sortedDataBySuccess(this.state.peaData)
+    })
+  }
+
+  sortDataByMatching() {
+    this.setState({
+      peaData: this.state.peaData.map(sortedTrialByMatching)
     })
   }
 
@@ -74,12 +81,12 @@ class SimulationApp extends Component {
   render() {
     return (
       <section className="SimulationApp">
-        <Header />
         <Controls trialParams={this.state.trialParams}
                   userGuess={this.state.userGuess}
                   handleUserGuess={this.handleUserGuess}
                   generateData={this.generateData}
-                  sortData={this.sortDataBySuccess} />
+                  sortDataByMatching={this.sortDataByMatching}
+                  sortDataBySuccess={this.sortDataBySuccess} />
         <Simulation data={this.state.peaData} />
         <Results width="700" successRate={this.state.successRate}/>
       </section>
@@ -87,4 +94,17 @@ class SimulationApp extends Component {
   }
 }
 
-export default SimulationApp;
+class App extends Component {
+  render() {
+    return  (
+    <section>
+    <Header />
+      <SimulationApp peasPerTrial={1} />
+      <SimulationApp peasPerTrial={6} />
+      <SimulationApp peasPerTrial={10} />
+      <SimulationApp peasPerTrial={40} />
+    </section>)
+  }
+}
+
+export default App;
