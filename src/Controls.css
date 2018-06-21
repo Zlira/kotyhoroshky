@@ -1,3 +1,22 @@
+/* TODO add a class */
 input[type=number] {
   width: 40px;
+}
+
+input[type=range] {
+  width: 140px;
+  vertical-align: bottom;
+}
+
+p.user-guess-controls, input.user-guess-controls {
+  display: inline-block;
+}
+
+.controls p {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+span.peas-per-trial {
+  font-weight: bold;
 }

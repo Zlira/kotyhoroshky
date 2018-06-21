@@ -100,7 +100,7 @@ class SimulationApp extends Component {
 class App extends Component {
   render() {
     return  (
-    <section>
+    <section className="Chapter1Simulation">
     <Header />
       <SimulationApp peasPerTrial={1} />
       <SimulationApp peasPerTrial={6} />

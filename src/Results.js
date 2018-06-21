@@ -1,3 +1,4 @@
+import './Results.css'
 import React, { Component } from 'react';
 
 class Results extends Component {
@@ -9,10 +10,10 @@ class Results extends Component {
     const percenSuccess = Math.round(successRate * 100) + '%'
     const successLabel = successRate === 0
       ? null
-      : <text y="20" x="0" fill="white" font-weight='bold'>{':) ' + percenSuccess}</text>
-    return <svg width={width} height={height}>
+      : <text y="20" x="0">{':) ' + percenSuccess}</text>
+    return <svg className="results" width={width} height={height}>
       <rect x="0" y="0" width={width}
-        height={height} className="simulationResult"/>
+        height={height} className="result-background"/>
       <rect y="0" x={indicatorX}
         width="10" height={height}
         className="resultIndicator"/>

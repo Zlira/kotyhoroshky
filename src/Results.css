@@ -1,0 +1,13 @@
+rect.result-background {
+  fill: #b3b3b3;
+}
+
+rect.resultIndicator {
+  fill: white;
+  stroke: red;
+}
+
+.results text {
+  fill: white;
+  font-weight: bold;
+}
