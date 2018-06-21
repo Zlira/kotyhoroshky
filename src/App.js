@@ -32,7 +32,6 @@ class SimulationApp extends Component {
     this.generateData = this.generateData.bind(this)
     this.calculateSuccessRate = this.calculateSuccessRate.bind(this)
     this.sortDataBySuccess = this.sortDataBySuccess.bind(this)
-    this.sortDataByMatching = this.sortDataByMatching.bind(this)
   }
 
   generateData() {
@@ -41,9 +40,19 @@ class SimulationApp extends Component {
       this.state.trialParams.peasPerTrial, this.state.userGuess
     )
     const successRate = this.calculateSuccessRate(data)
-    this.setState({peaData: data, successRate: successRate})
+    this.setState({
+      peaData: data,
+      successRate: 0 // don't show label until sorting ends
+    })
     setTimeout(this.sortDataBySuccess, 500)
-    setTimeout(this.sortDataByMatching, 1500)
+    setTimeout(() => {
+      this.sortDataByMatching
+      // update successRate to the actual value
+      this.setState((prevState => ({
+        successRate: successRate,
+        peaData: prevState.peaData.map(sortedTrialByMatching),
+      })))
+    }, 1500)
   }
 
   calculateSuccessRate(data) {
@@ -56,12 +65,6 @@ class SimulationApp extends Component {
   sortDataBySuccess() {
     this.setState(prevState => ({
       peaData: sortedDataBySuccess(prevState.peaData)
-    }))
-  }
-
-  sortDataByMatching() {
-    this.setState(prevState => ({
-      peaData: prevState.peaData.map(sortedTrialByMatching)
     }))
   }
 
