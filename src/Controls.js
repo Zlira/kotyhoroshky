@@ -9,8 +9,6 @@ class Controls extends Component {
                          userGuess={this.props.userGuess}
                          handleUserGuess={this.props.handleUserGuess} />
       <RunButton generateData={this.props.generateData}/>
-      <SortBySuccessButton sortData={this.props.sortDataBySuccess}/>
-      <SortByMatchingButton sortData={this.props.sortDataByMatching} />
     </div>
   }
 }
@@ -57,14 +55,6 @@ class RunButton extends Component {
   render() {
     return <button onClick={this.props.generateData}>Вперед!</button>
   }
-}
-
-function SortBySuccessButton(props) {
-  return <button onClick={props.sortData}>Показати успіх!</button>
-}
-
-function SortByMatchingButton(props) {
-  return <button onClick={props.sortData}>Ще посортувати</button>
 }
 
 export default Controls

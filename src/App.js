@@ -42,6 +42,8 @@ class SimulationApp extends Component {
     )
     const successRate = this.calculateSuccessRate(data)
     this.setState({peaData: data, successRate: successRate})
+    setTimeout(this.sortDataBySuccess, 500)
+    setTimeout(this.sortDataByMatching, 1500)
   }
 
   calculateSuccessRate(data) {
@@ -52,15 +54,15 @@ class SimulationApp extends Component {
 
   // TODO think of a better name
   sortDataBySuccess() {
-    this.setState({
-      peaData: sortedDataBySuccess(this.state.peaData)
-    })
+    this.setState(prevState => ({
+      peaData: sortedDataBySuccess(prevState.peaData)
+    }))
   }
 
   sortDataByMatching() {
-    this.setState({
-      peaData: this.state.peaData.map(sortedTrialByMatching)
-    })
+    this.setState(prevState => ({
+      peaData: prevState.peaData.map(sortedTrialByMatching)
+    }))
   }
 
   handleUserGuess(event) {
@@ -84,9 +86,7 @@ class SimulationApp extends Component {
         <Controls trialParams={this.state.trialParams}
                   userGuess={this.state.userGuess}
                   handleUserGuess={this.handleUserGuess}
-                  generateData={this.generateData}
-                  sortDataByMatching={this.sortDataByMatching}
-                  sortDataBySuccess={this.sortDataBySuccess} />
+                  generateData={this.generateData}/>
         <Simulation data={this.state.peaData} />
         <Results width="700" successRate={this.state.successRate}/>
       </section>
